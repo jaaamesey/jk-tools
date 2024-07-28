@@ -44,14 +44,9 @@ function FFM() {
     setLoaded(true);
   };
 
-  const transcode = async () => {
+  const transcode = async (list: FileList) => {
     const ffmpeg = ffmpegRef;
-    await ffmpeg.writeFile(
-      "input.webm",
-      await fetchFile(
-        "https://raw.githubusercontent.com/ffmpegwasm/testdata/master/Big_Buck_Bunny_180_10s.webm",
-      ),
-    );
+    await ffmpeg.writeFile("input.webm", await fetchFile(list[0]));
     await ffmpeg.exec([
       "-f",
       "lavfi",
@@ -75,7 +70,13 @@ function FFM() {
         <>
           <video ref={(el) => (videoRef = el)} controls></video>
           <br />
-          <button onClick={transcode}>Convert mp3 to mp4</button>
+          <input
+            type="file"
+            accept="audio/mpeg"
+            onChange={(e) =>
+              e.target.files?.length && transcode(e.target.files)
+            }
+          />
           <p ref={(el) => (messageRef = el)}></p>
         </>
       ) : (
