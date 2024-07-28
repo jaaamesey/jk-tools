@@ -65,7 +65,7 @@ function FFM() {
       "+shortest",
       "output.mp4",
     ]);
-    const data = await ffmpeg.readFile(inputName + ".mp4");
+    const data = await ffmpeg.readFile("output.mp4");
     if (!videoRef) return;
     videoRef.src = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
   };
