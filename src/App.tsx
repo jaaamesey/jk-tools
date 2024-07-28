@@ -85,7 +85,8 @@ function FFM() {
       <h2>{title}</h2>
       {loaded() ? (
         <>
-          <strong>Select the files you want to convert:</strong>
+          <strong>Select all the files you want to convert:</strong>
+          <br />
           <input
             type="file"
             accept="audio/mpeg"
@@ -97,7 +98,7 @@ function FFM() {
           <p ref={(el) => (messageRef = el)}></p>
           <p>
             Your browser might ask for permission to download multiple files -
-            just click "Allow"
+            just click "Allow" if that happens.
           </p>
         </>
       ) : (
