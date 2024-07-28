@@ -83,6 +83,12 @@ function FFM() {
   return (
     <>
       <h2>{title}</h2>
+      <p>
+        This tool takes in a bunch of MP3 files and turns them into proper MP4
+        files that services like Vimeo should accept. Processing is all done
+        offline (no internet required after the converter loads up) with the MP4
+        files just put into your Downloads folder.
+      </p>
       {loaded() ? (
         <>
           <strong>Select all the files you want to convert:</strong>
