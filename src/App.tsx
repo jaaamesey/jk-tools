@@ -15,7 +15,6 @@ function FFM() {
   const [loaded, setLoaded] = createSignal(false);
 
   let ffmpegRef = new FFmpeg();
-  let videoRef: HTMLVideoElement | null = null;
   let messageRef: HTMLParagraphElement | null = null;
 
   const title = "Karlsson MP3 to MP4 Converter 9000 Supreme";
@@ -29,7 +28,9 @@ function FFM() {
     const ffmpeg = ffmpegRef;
     ffmpeg.on("log", ({ message }) => {
       if (!messageRef) throw new Error("Expected message div");
-      messageRef.innerHTML = message;
+      messageRef.innerHTML = message.startsWith("Aborted()")
+        ? "Done (hopefully?)"
+        : message;
       console.log(message);
     });
     console.log("loading FFMPEG");
@@ -51,26 +52,26 @@ function FFM() {
 
   const transcode = async (list: FileList) => {
     const ffmpeg = ffmpegRef;
-    const file = list[0];
-    const inputName = "input.mp3";
-    await ffmpeg.writeFile(inputName, await fetchFile(file));
-    await ffmpeg.exec([
-      "-f",
-      "lavfi",
-      "-i",
-      "color=c=black:s=128x72",
-      "-i",
-      inputName,
-      "-shortest",
-      "-fflags",
-      "+shortest",
-      "output.mp4",
-    ]);
-    const data = await ffmpeg.readFile("output.mp4");
-    if (!videoRef) return;
+    Array.from(list).forEach(async (file, i) => {
+      const inputName = `input${i}.mp3`;
+      await ffmpeg.writeFile(inputName, await fetchFile(file));
+      await ffmpeg.exec([
+        "-f",
+        "lavfi",
+        "-i",
+        "color=c=black:s=128x72",
+        "-i",
+        inputName,
+        "-shortest",
+        "-fflags",
+        "+shortest",
+        "output.mp4",
+      ]);
+      const data = await ffmpeg.readFile(`output${i}.mp4`);
 
-    const url = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
-    downloadURI(url, "test.mp4");
+      const url = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
+      downloadURI(url, "test.mp4");
+    });
   };
 
   return (
@@ -78,8 +79,6 @@ function FFM() {
       <h2>{title}</h2>
       {loaded() ? (
         <>
-          <video ref={(el) => (videoRef = el)} controls></video>
-          <br />
           <input
             type="file"
             accept="audio/mpeg"
