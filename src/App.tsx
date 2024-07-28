@@ -54,7 +54,7 @@ function FFM() {
     const ffmpeg = ffmpegRef;
     for (let i = 0; i < list.length; i++) {
       const file = list[i];
-      const inputName = `input${i}.mp3`;
+      const inputName = `input.mp3`;
       console.log("Converting", file.name, inputName);
       await ffmpeg.writeFile(inputName, await fetchFile(file));
       await ffmpeg.exec([
@@ -69,7 +69,7 @@ function FFM() {
         "+shortest",
         "output.mp4",
       ]);
-      const data = await ffmpeg.readFile(`output${i}.mp4`);
+      const data = await ffmpeg.readFile(`output.mp4`);
       const url = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
       const outputName = file.name.split(".")[0] + ".mp4";
       downloadURI(url, outputName);
