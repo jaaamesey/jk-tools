@@ -45,10 +45,14 @@ function FFM() {
           "application/wasm",
         ),
       })
-      .catch((e) => console.error(e));
+      .catch((e) => {
+        console.error(e);
+        messageRef!.innerHTML = e;
+      });
     console.log("loaded FFMPEG");
     setLoaded(true);
   };
+  load();
 
   const transcode = async (list: FileList) => {
     const ffmpeg = ffmpegRef;
@@ -81,6 +85,7 @@ function FFM() {
       <h2>{title}</h2>
       {loaded() ? (
         <>
+          <strong>Select the files you want to convert:</strong>
           <input
             type="file"
             accept="audio/mpeg"
@@ -90,11 +95,13 @@ function FFM() {
             multiple
           />
           <p ref={(el) => (messageRef = el)}></p>
+          <p>
+            Your browser might ask for permission to download multiple files -
+            just click "Allow"
+          </p>
         </>
       ) : (
-        <button onClick={load}>
-          Click here to load the converter (may take a while)
-        </button>
+        <strong>Loading, please wait...</strong>
       )}
     </>
   );
