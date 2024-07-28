@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import "./App.css";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
@@ -16,6 +16,10 @@ function FFM() {
   let ffmpegRef = new FFmpeg();
   let videoRef: HTMLVideoElement | null = null;
   let messageRef: HTMLParagraphElement | null = null;
+
+  createEffect(() => {
+    document.title = "Karlsson MP3 to MP4 Converter 9000";
+  });
 
   const load = async () => {
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
@@ -46,7 +50,8 @@ function FFM() {
 
   const transcode = async (list: FileList) => {
     const ffmpeg = ffmpegRef;
-    await ffmpeg.writeFile("input.webm", await fetchFile(list[0]));
+    const file = list[0];
+    await ffmpeg.writeFile(file.name, await fetchFile(file));
     await ffmpeg.exec([
       "-f",
       "lavfi",
@@ -59,7 +64,7 @@ function FFM() {
       "+shortest",
       "output.mp4",
     ]);
-    const data = await ffmpeg.readFile("output.mp4");
+    const data = await ffmpeg.readFile(file.name + ".mp4");
     if (!videoRef) return;
     videoRef.src = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
   };
