@@ -13,12 +13,15 @@ function App() {
 
 function FFM() {
   const [loaded, setLoaded] = createSignal(false);
+
   let ffmpegRef = new FFmpeg();
   let videoRef: HTMLVideoElement | null = null;
   let messageRef: HTMLParagraphElement | null = null;
 
+  const title = "Karlsson MP3 to MP4 Converter 9000 Supreme";
+
   createEffect(() => {
-    document.title = "Karlsson MP3 to MP4 Converter 9000";
+    document.title = title;
   });
 
   const load = async () => {
@@ -29,9 +32,7 @@ function FFM() {
       messageRef.innerHTML = message;
       console.log(message);
     });
-    // toBlobURL is used to bypass CORS issue, urls with the same
-    // domain can be used directly.
-    console.log("loading");
+    console.log("loading FFMPEG");
     await ffmpeg
       .load({
         coreURL: await toBlobURL(
@@ -44,7 +45,7 @@ function FFM() {
         ),
       })
       .catch((e) => console.error(e));
-    console.log("loaded");
+    console.log("loaded FFMPEG");
     setLoaded(true);
   };
 
@@ -67,11 +68,14 @@ function FFM() {
     ]);
     const data = await ffmpeg.readFile("output.mp4");
     if (!videoRef) return;
-    videoRef.src = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
+
+    const url = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
+    downloadURI(url, "test.mp4");
   };
 
   return (
     <>
+      <h2>{title}</h2>
       {loaded() ? (
         <>
           <video ref={(el) => (videoRef = el)} controls></video>
@@ -82,6 +86,7 @@ function FFM() {
             onChange={(e) =>
               e.target.files?.length && transcode(e.target.files)
             }
+            multiple
           />
           <p ref={(el) => (messageRef = el)}></p>
         </>
@@ -92,6 +97,15 @@ function FFM() {
       )}
     </>
   );
+}
+
+function downloadURI(uri: string, name: string) {
+  const link = document.createElement("a");
+  link.download = name;
+  link.href = uri;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 export default App;
