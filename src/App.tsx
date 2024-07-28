@@ -52,7 +52,8 @@ function FFM() {
 
   const transcode = async (list: FileList) => {
     const ffmpeg = ffmpegRef;
-    Array.from([list[0]]).forEach(async (file, i) => {
+    for (let i = 0; i < list.length; i++) {
+      const file = list[i];
       const inputName = `input${i}.mp3`;
       console.log("Converting", file.name, inputName);
       await ffmpeg.writeFile(inputName, await fetchFile(file));
@@ -72,7 +73,7 @@ function FFM() {
       const url = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
       const outputName = file.name.split(".")[0] + ".mp4";
       downloadURI(url, outputName);
-    });
+    }
   };
 
   return (
