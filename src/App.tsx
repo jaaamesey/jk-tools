@@ -52,7 +52,18 @@ function FFM() {
         "https://raw.githubusercontent.com/ffmpegwasm/testdata/master/Big_Buck_Bunny_180_10s.webm",
       ),
     );
-    await ffmpeg.exec(["-i", "input.webm", "output.mp4"]);
+    await ffmpeg.exec([
+      "-f",
+      "lavfi",
+      "-i",
+      "color=c=black:s=128x72",
+      "-i",
+      "input.mp3",
+      "-shortest",
+      "-fflags",
+      "+shortest",
+      "output.mp4",
+    ]);
     const data = await ffmpeg.readFile("output.mp4");
     if (!videoRef) return;
     videoRef.src = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
@@ -64,12 +75,13 @@ function FFM() {
         <>
           <video ref={(el) => (videoRef = el)} controls></video>
           <br />
-          <button onClick={transcode}>Transcode webm to mp4</button>
+          <button onClick={transcode}>Convert mp3 to mp4</button>
           <p ref={(el) => (messageRef = el)}></p>
-          <p>Open Developer Tools (Ctrl+Shift+I) to View Logs</p>
         </>
       ) : (
-        <button onClick={load}>Load ffmpeg-core (~31 MB)</button>
+        <button onClick={load}>
+          Click here to load the converter (may take a while)
+        </button>
       )}
     </>
   );
