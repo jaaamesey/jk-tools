@@ -27,6 +27,7 @@ function FFM() {
     });
     // toBlobURL is used to bypass CORS issue, urls with the same
     // domain can be used directly.
+    console.log("loading");
     await ffmpeg
       .load({
         coreURL: await toBlobURL(
@@ -39,6 +40,7 @@ function FFM() {
         ),
       })
       .catch((e) => console.error(e));
+    console.log("loaded");
     setLoaded(true);
   };
 
@@ -56,16 +58,20 @@ function FFM() {
     videoRef.src = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
   };
 
-  return loaded() ? (
+  return (
     <>
-      <video ref={(el) => (videoRef = el)} controls></video>
-      <br />
-      <button onClick={transcode}>Transcode webm to mp4</button>
-      <p ref={(el) => (messageRef = el)}></p>
-      <p>Open Developer Tools (Ctrl+Shift+I) to View Logs</p>
+      {loaded() ? (
+        <>
+          <video ref={(el) => (videoRef = el)} controls></video>
+          <br />
+          <button onClick={transcode}>Transcode webm to mp4</button>
+          <p ref={(el) => (messageRef = el)}></p>
+          <p>Open Developer Tools (Ctrl+Shift+I) to View Logs</p>
+        </>
+      ) : (
+        <button onClick={load}>Load ffmpeg-core (~31 MB)</button>
+      )}
     </>
-  ) : (
-    <button onClick={load}>Load ffmpeg-core (~31 MB)</button>
   );
 }
 
