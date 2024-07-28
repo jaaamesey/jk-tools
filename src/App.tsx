@@ -52,8 +52,9 @@ function FFM() {
 
   const transcode = async (list: FileList) => {
     const ffmpeg = ffmpegRef;
-    Array.from(list).forEach(async (file, i) => {
+    Array.from([list[0]]).forEach(async (file, i) => {
       const inputName = `input${i}.mp3`;
+      console.log("Converting", file.name, inputName);
       await ffmpeg.writeFile(inputName, await fetchFile(file));
       await ffmpeg.exec([
         "-f",
