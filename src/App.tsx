@@ -58,7 +58,7 @@ function FFM() {
       "-i",
       "color=c=black:s=128x72",
       "-i",
-      "input.mp3",
+      file.name,
       "-shortest",
       "-fflags",
       "+shortest",
