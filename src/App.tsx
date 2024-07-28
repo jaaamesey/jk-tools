@@ -68,9 +68,9 @@ function FFM() {
         "output.mp4",
       ]);
       const data = await ffmpeg.readFile(`output${i}.mp4`);
-
       const url = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
-      downloadURI(url, "test.mp4");
+      const outputName = file.name.split(".")[0] + ".mp4";
+      downloadURI(url, outputName);
     });
   };
 
