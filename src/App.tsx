@@ -91,7 +91,10 @@ function FFM() {
       </p>
       {loaded() ? (
         <>
-          <strong>Select all the files you want to convert:</strong>
+          <strong>
+            Select all the files you want to convert (hold Ctrl or CMD to select
+            multiple):
+          </strong>
           <br />
           <input
             type="file"
