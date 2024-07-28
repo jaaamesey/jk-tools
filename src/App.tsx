@@ -51,20 +51,21 @@ function FFM() {
   const transcode = async (list: FileList) => {
     const ffmpeg = ffmpegRef;
     const file = list[0];
-    await ffmpeg.writeFile(file.name, await fetchFile(file));
+    const inputName = "input.mp3";
+    await ffmpeg.writeFile(inputName, await fetchFile(file));
     await ffmpeg.exec([
       "-f",
       "lavfi",
       "-i",
       "color=c=black:s=128x72",
       "-i",
-      file.name,
+      inputName,
       "-shortest",
       "-fflags",
       "+shortest",
       "output.mp4",
     ]);
-    const data = await ffmpeg.readFile(file.name + ".mp4");
+    const data = await ffmpeg.readFile(inputName + ".mp4");
     if (!videoRef) return;
     videoRef.src = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
   };
